@@ -7,8 +7,8 @@ from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -39,7 +39,7 @@ def plot_model_history(model_history):
     axs[1].set_xlabel('Epoch')
     axs[1].set_xticks(np.arange(1,len(model_history.history['loss'])+1),len(model_history.history['loss'])/10)
     axs[1].legend(['train', 'val'], loc='best')
-    fig.savefig('plot.png')
+    fig.savefig('plot_expand.png')
  #    plt.show()
 
 # Define data generators
@@ -48,7 +48,7 @@ val_dir = 'data/test'
 
 num_train = 28709
 num_val = 7178
-batch_size = 64
+batch_size = 128
 num_epoch = 50
 
 train_datagen = ImageDataGenerator(rescale=1./255)
@@ -78,7 +78,7 @@ model.add(Dropout(0.25))
 
 model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+model.add(Conv2D(256, kernel_size=(3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
@@ -87,10 +87,9 @@ model.add(Dense(1024, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(7, activation='softmax'))
 
+model.summary()
+es = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1)
 # If you want to train the same model or try other models, go for this
-# callbacks 
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1)
-
 if mode == "train":
     model.compile(loss='categorical_crossentropy',optimizer=Adam(lr=0.0001, decay=1e-6),metrics=['accuracy'])
     model_info = model.fit_generator(
@@ -101,11 +100,11 @@ if mode == "train":
             validation_steps=num_val // batch_size,
             callbacks=[es])
     plot_model_history(model_info)
-    model.save_weights('model.h5')
+    model.save_weights('model_expand.h5')
 
 # emotions will be displayed on your face from the webcam feed
 elif mode == "display":
-    model.load_weights('model.h5')
+    model.load_weights('model_expand.h5')
 
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
