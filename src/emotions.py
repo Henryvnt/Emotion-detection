@@ -39,7 +39,7 @@ def plot_model_history(model_history):
     axs[1].set_xlabel('Epoch')
     axs[1].set_xticks(np.arange(1,len(model_history.history['loss'])+1),len(model_history.history['loss'])/10)
     axs[1].legend(['train', 'val'], loc='best')
-    fig.savefig('plot.png')
+    fig.savefig('plot_1.png')
  #    plt.show()
 
 # Define data generators
@@ -49,7 +49,7 @@ val_dir = 'data/test'
 num_train = 28709
 num_val = 7178
 batch_size = 64
-num_epoch = 50
+num_epoch = 100
 
 train_datagen = ImageDataGenerator(rescale=1./255)
 val_datagen = ImageDataGenerator(rescale=1./255)
@@ -101,7 +101,7 @@ if mode == "train":
             validation_steps=num_val // batch_size,
             callbacks=[es])
     plot_model_history(model_info)
-    model.save_weights('model.h5')
+    model.save_weights('model_1.h5')
 
 # emotions will be displayed on your face from the webcam feed
 elif mode == "display":
