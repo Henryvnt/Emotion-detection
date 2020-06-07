@@ -150,3 +150,11 @@ elif mode == "display":
         cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+#Confution Matrix and Classification Report
+Y_pred = model.predict_generator(validation_generator, num_val // batch_size+1)
+y_pred = np.argmax(Y_pred, axis=1)
+print('Confusion Matrix')
+print(confusion_matrix(validation_generator.classes, y_pred))
+print('Classification Report')
+target_names = [ "Angry",  "Disgusted",  "Fearful", "Happy",  "Neutral","Sad", "Surprised"]
+print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
