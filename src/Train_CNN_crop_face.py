@@ -12,10 +12,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import classification_report, confusion_matrix
 from keras.regularizers import l2
 import os
-<<<<<<< HEAD
 from tensorflow.keras.callbacks import EarlyStopping
-=======
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
@@ -32,21 +30,13 @@ def plot_model_history(model_history):
     """
     fig, axs = plt.subplots(1,2,figsize=(15,5))
     # summarize history for accuracy
-<<<<<<< HEAD
     axs[0].plot(range(1,len(model_history.history['acc'])+1),model_history.history['acc'])
     axs[0].plot(range(1,len(model_history.history['val_acc'])+1),model_history.history['val_acc'])
     axs[0].set_title('Model Accuracy')
     axs[0].set_ylabel('Accuracy')
     axs[0].set_xlabel('Epoch')
     axs[0].set_xticks(np.arange(1,len(model_history.history['acc'])+1),len(model_history.history['acc'])/10)
-=======
-    axs[0].plot(range(1,len(model_history.history['accuracy'])+1),model_history.history['accuracy'])
-    axs[0].plot(range(1,len(model_history.history['val_accuracy'])+1),model_history.history['val_accuracy'])
-    axs[0].set_title('Model Accuracy')
-    axs[0].set_ylabel('Accuracy')
-    axs[0].set_xlabel('Epoch')
-    axs[0].set_xticks(np.arange(1,len(model_history.history['accuracy'])+1),len(model_history.history['accuracy'])/10)
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
+
     axs[0].legend(['train', 'val'], loc='best')
     # summarize history for loss
     axs[1].plot(range(1,len(model_history.history['loss'])+1),model_history.history['loss'])
@@ -56,11 +46,8 @@ def plot_model_history(model_history):
     axs[1].set_xlabel('Epoch')
     axs[1].set_xticks(np.arange(1,len(model_history.history['loss'])+1),len(model_history.history['loss'])/10)
     axs[1].legend(['train', 'val'], loc='best')
-<<<<<<< HEAD
     fig.savefig('../imgs/crop_face_plot.png')
-=======
-    fig.savefig('plot.png')
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
+
     plt.show()
 
 # Define data generators
@@ -75,11 +62,8 @@ num_epoch = 50
 train_datagen = ImageDataGenerator(rescale=1./255)
 val_datagen = ImageDataGenerator(rescale=1./255)
 
-<<<<<<< HEAD
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=7)
 
-=======
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
 train_generator = train_datagen.flow_from_directory(
         train_dir,
         target_size=(48,48),
@@ -97,7 +81,7 @@ validation_generator = val_datagen.flow_from_directory(
 # Create the model
 model = Sequential()
 
-<<<<<<< HEAD
+
 model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(48,48,1),kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
 model.add(Conv2D(64, kernel_size=(3, 3), activation='relu',kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -115,19 +99,7 @@ model.add(Dropout(0.5))
 model.add(Dense(7, activation='softmax'))
 
 
-=======
-model.add(Conv2D(64, kernel_size=(5, 5), activation='relu', input_shape=(48,48,1),kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
-model.add(MaxPooling2D(pool_size=(3, 3), strides=(2, 2)))
-model.add(Dropout(0.25))
 
-model.add(Conv2D(64, kernel_size=(5, 5), activation='relu',kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
-model.add(MaxPooling2D(pool_size=(3, 3), strides=(2, 2)))
-model.add(Conv2D(128, kernel_size=(4, 4), activation='relu',kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
-model.add(Flatten())
-model.add(Dense(3072, activation='relu', kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
-model.add(Dropout(0.5))
-model.add(Dense(7, activation='softmax', kernel_regularizer=l2(0.001), bias_regularizer=l2(0.1)))
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
 
 # If you want to train the same model or try other models, go for this
 if mode == "train":
@@ -137,11 +109,8 @@ if mode == "train":
             steps_per_epoch=int(num_train // batch_size),
             epochs=num_epoch,
             validation_data=validation_generator,
-<<<<<<< HEAD
             validation_steps=int(num_val // batch_size),callbacks=[es])
-=======
-            validation_steps=int(num_val // batch_size))
->>>>>>> 1a1ab11b023608024be6ef3a98a461452ccbe448
+
     plot_model_history(model_info)
 
     model.save_weights('Model/CNN_crop_face_weight.h5')
