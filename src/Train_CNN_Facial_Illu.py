@@ -15,6 +15,13 @@ import os
 
 from tensorflow.keras.callbacks import EarlyStopping
 
+import itertools
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+
+from platform import python_version_tuple
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
@@ -146,12 +153,56 @@ elif mode == "display":
         cv2.imshow('Video', cv2.resize(frame,(1600,960),interpolation = cv2.INTER_CUBIC))
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+            
+#reload model
+reloaded_model = tf.keras.models.load_model("Model/CNN_Illu_model.h5")
+x, y = izip(*(validation_generator[i] for i in xrange(len(validation_generator))))
+x_test, y_test = np.vstack(x), np.vstack(y)
+    
+#. Draw matrix result
+#..Load du lieu 
+truey=[]
+predy=[]
+x= x_test
+y=  y_test
+ypredict = reloaded_model.predict(x)
 
-#Confution Matrix and Classification Report
-Y_pred = model.predict_generator(validation_generator, num_val // batch_size+1)
-y_pred = np.argmax(Y_pred, axis=1)
-print('Confusion Matrix')
-print(confusion_matrix(validation_generator.classes, y_pred))
-print('Classification Report')
-target_names = [ "Angry",  "Disgusted",  "Fearful", "Happy",  "Neutral","Sad", "Surprised"]
-print(classification_report(validation_generator.classes, y_pred, target_names=target_names))
+#. Draw matrix result
+
+#.Load du lieu 
+#chuyen du lieu ve list
+yp = ypredict.tolist()
+yt = y.tolist()
+#.Lay cac gia tri max cua y de danh gia
+for i in range(len(y)):
+  yy = max(yp[i])
+  yyt = max(yt[i])
+  predy.append(yp[i].index(yy))
+  truey.append(yt[i].index(yyt))
+
+#. Ve matran
+y_true =  truey
+y_pred =  predy
+cm = confusion_matrix(y_true, y_pred)
+labels = [ "Angry",  "Disgusted",  "Fearful",  "Happy",  "Neutral",  "Sad", "Surprised"]
+title='Confusion matrix'
+print(cm)
+
+plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+plt.title(title)
+plt.colorbar()
+tick_marks = np.arange(len(labels))
+plt.xticks(tick_marks, labels, rotation=45)
+plt.yticks(tick_marks, labels)
+fmt = 'd'
+thresh = cm.max() / 2.
+for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    plt.text(j, i, format(cm[i, j], fmt),
+            horizontalalignment="center",
+            color="white" if cm[i, j] > thresh else "black")
+
+plt.ylabel('True label')
+plt.xlabel('Predicted label')
+plt.tight_layout()
+plt.savefig('../imgs/Facial_Illu_matrix_result.png')
+print("done")
