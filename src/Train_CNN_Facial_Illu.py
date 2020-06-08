@@ -21,7 +21,13 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 from platform import python_version_tuple
-
+from keras.backend.tensorflow_backend import set_session
+import tensorflow as tf
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+config.log_device_placement = True  # to log device placement (on which device the operation ran)
+sess = tf.Session(config=config)
+set_session(sess)  # set this TensorFlow session as the default session for Keras
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
 
@@ -111,7 +117,8 @@ if mode == "train":
             steps_per_epoch=int(num_train // batch_size),
             epochs=num_epoch,
             validation_data=validation_generator,
-            validation_steps=int(num_val // batch_size),callbacks=[es])
+            validation_steps=int(num_val // batch_size),callbacks=[es],
+	use_multiprocessing=True, workers=8)
 
 
     model.save_weights('Model/CNN_Illu_weight.h5')

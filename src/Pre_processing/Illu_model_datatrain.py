@@ -1,4 +1,3 @@
-import dlib
 import glob
 import PIL
 import os
@@ -8,7 +7,6 @@ from tqdm import tqdm
 import numpy as np
 from os import path
 from pylab import rcParams
-from __future__ import print_function
 import torch
 #import PIL
 #print(PIL.PILLOW_VERSION)
@@ -113,4 +111,4 @@ if __name__ == "__main__":
       homo_filter = HomomorphicFilter(a = 0.75, b = 1.25)
       img_filtered = homo_filter.filter(I=img, filter_params=[30,2])
       cv2.imwrite(img_path_out, img_filtered)
-      print("Done illuminate ", crop_img)
+      print("Done iluminate ", crop_img)

@@ -8,7 +8,6 @@ from tqdm import tqdm
 import numpy as np
 from os import path
 from pylab import rcParams
-from __future__ import print_function
 import torch
 #import PIL
 #print(PIL.PILLOW_VERSION)
